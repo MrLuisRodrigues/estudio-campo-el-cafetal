@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio de Campo: Parroquia El Cafetal, Municipio Baruta | UCV</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        thistle: '#CDB4DB',
+                        pastelPink: '#FFC8DD',
+                        babyPink: '#FFAFCC',
+                        icyBlue: '#BDE0FE',
+                        skyBlue: '#A2D2FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Leaflet CSS for Interactive Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        .custom-shadow {
+            box-shadow: 0 10px 30px -5px rgba(205, 180, 219, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-pastelPink selection:text-slate-900">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-icyBlue/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-thistle to-skyBlue flex items-center justify-center text-white font-bold shadow-sm">
+                    UCV
+                </div>
+                <div>
+                    <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500">Facultad de Ciencias Económicas y Sociales</span>
+                    <span class="text-sm font-bold text-slate-800">Geografía Económica & NIIF</span>
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+                <a href="#mapa" class="hover:text-skyBlue transition">Mapa Interactivo</a>
+                <a href="#galeria" class="hover:text-skyBlue transition">Bitácora Visual</a>
+                <a href="#informe" class="hover:text-skyBlue transition">Diagnóstico Territorial</a>
+                <a href="#niif" class="hover:text-skyBlue transition">Normativa NIIF</a>
+            </nav>
+            <div>
+                <a href="#informe" onclick="alert('Generando descarga del Informe Técnico completo en PDF...'); return false;" class="px-4 py-2 rounded-xl bg-skyBlue/30 hover:bg-skyBlue/50 text-slate-800 font-semibold text-sm transition shadow-sm">
+                    Descargar PDF
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-20 lg:py-28 bg-gradient-to-b from-thistle/20 via-icyBlue/10 to-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-pastelPink/40 text-slate-700 text-xs font-semibold mb-6 shadow-sm">
+                <span class="w-2 h-2 rounded-full bg-skyBlue animate-pulse"></span>
+                <span>Estudio de Campo: Parroquia El Cafetal, Municipio Baruta (12 Sept 2026)[cite: 2]</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight max-w-4xl mx-auto leading-tight">
+                Estudio de Campo del Municipio Baruta, <span class="text-transparent bg-clip-text bg-gradient-to-r from-skyBlue to-thistle">El Cafetal</span>
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto font-normal">
+                Reconstrucción geográfica, evidencia visual y análisis territorial conectando la geografía económica con las Normas Internacionales de Información Financiera (NIIF)[cite: 2].
+            </p>
+            <div class="mt-10 flex flex-wrap justify-center gap-4">
+                <a href="#mapa" class="px-8 py-3.5 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition shadow-lg shadow-slate-900/10">
+                    Explorar Mapa Interactivo
+                </a>
+                <a href="#galeria" class="px-8 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition shadow-sm">
+                    Ver Registro Fotográfico
+                </a>
+            </div>
+        </div>
+        <!-- Decorative blobs -->
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-thistle/30 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-20 -right-40 w-96 h-96 bg-icyBlue/40 rounded-full blur-3xl pointer-events-none"></div>
+    </section>
+
+    <!-- Interactive Map Section -->
+    <section id="mapa" class="py-16 bg-white border-y border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Mapa Interactivo y Trazado de Ruta</h2>
+                <p class="mt-3 text-slate-600">
+                    Visualización geográfica del levantamiento en campo. Explora los puntos clave de observación a lo largo del trayecto en la Parroquia El Cafetal.
+                </p>
+            </div>
+
+            <!-- Map Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <div class="lg:col-span-3 h-[500px] rounded-2xl overflow-hidden shadow-sm border border-slate-200 relative z-10" id="leafletMap"></div>
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Etapas del Recorrido en Campo</h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-skyBlue transition" onclick="zoomToPoint(10.4772, -66.8622)">
+                                <span class="font-semibold text-slate-800 block">Punto de Partida: Chacaíto</span>
+                                <span class="text-xs text-slate-500">Frente al Centro Parks, abordaje de transporte público[cite: 2].</span>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-skyBlue transition" onclick="zoomToPoint(10.4670, -66.8450)">
+                                <span class="font-semibold text-slate-800 block">Etapa A: Clínica Santa Paula</span>
+                                <span class="text-xs text-slate-500">Entorno de orden, limpieza y baja afluencia peatonal[cite: 2].</span>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-skyBlue transition" onclick="zoomToPoint(10.4580, -66.8390)">
+                                <span class="font-semibold text-slate-800 block">Etapa B: Plaza Las Américas</span>
+                                <span class="text-xs text-slate-500">Núcleo comercial, farmacias, SAIME y servicios[cite: 2].</span>
+                            </div>
+                            <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm cursor-pointer hover:border-skyBlue transition" onclick="zoomToPoint(10.4530, -66.8320)">
+                                <span class="font-semibold text-slate-800 block">Etapa C & D: Bulevar y Cadenas</span>
+                                <span class="text-xs text-slate-500">Comercio informal y Supermercados Gama / Plan Suárez[cite: 2].</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-200 text-xs text-slate-500">
+                        * Cátedra de Geografía Económica de Venezuela (UCV).
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Log Section (Gallery) -->
+    <section id="galeria" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Registro Fotográfico y Audiovisual</h2>
+                <p class="mt-3 text-slate-600">
+                    Evidencia recolectada durante el levantamiento de información en sitio por el equipo de investigación[cite: 2].
+                </p>
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap justify-center gap-2 mt-6" id="galleryFilters">
+                    <button onclick="filterGallery('all')" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold transition filter-btn active">Todos</button>
+                    <button onclick="filterGallery('infraestructura')" class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition filter-btn">Infraestructura</button>
+                    <button onclick="filterGallery('comercio')" class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition filter-btn">Comercio</button>
+                    <button onclick="filterGallery('comunidad')" class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition filter-btn">Comunidad</button>
+                </div>
+            </div>
+
+            <!-- Gallery Grid (Vertical Format) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="galleryGrid">
+                <!-- Item 1 -->
+                <div class="gallery-item bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col" data-category="infraestructura">
+                    <div class="h-64 bg-gradient-to-tr from-thistle/40 to-skyBlue/40 flex items-center justify-center relative overflow-hidden">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-700">09:30 AM – Punto 1</span>
+                        <svg class="w-16 h-16 text-slate-400 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-skyBlue uppercase tracking-wider">Infraestructura</span>
+                            <h3 class="text-base font-bold text-slate-900 mt-1">Etapa A: Entorno Santa Paula</h3>
+                            <p class="text-xs text-slate-600 mt-2">Primer registro de infraestructura urbana en entorno caracterizado por orden, limpieza y baja afluencia peatonal[cite: 2].</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="gallery-item bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col" data-category="comercio">
+                    <div class="h-64 bg-gradient-to-tr from-pastelPink/40 to-thistle/40 flex items-center justify-center relative overflow-hidden">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-700">10:45 AM – Punto 2</span>
+                        <svg class="w-16 h-16 text-slate-400 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-pink-500 uppercase tracking-wider">Comercio</span>
+                            <h3 class="text-base font-bold text-slate-900 mt-1">Etapa B: Plaza Las Américas</h3>
+                            <p class="text-xs text-slate-600 mt-2">Inspección de farmacias, sede del SAIME, Italcambio y ZOOM en El Cafetal Sur[cite: 2].</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="gallery-item bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col" data-category="comunidad">
+                    <div class="h-64 bg-gradient-to-tr from-icyBlue/40 to-babyPink/40 flex items-center justify-center relative overflow-hidden">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-700">11:30 AM – Punto 3</span>
+                        <svg class="w-16 h-16 text-slate-400 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-blue-500 uppercase tracking-wider">Comunidad</span>
+                            <h3 class="text-base font-bold text-slate-900 mt-1">Etapa C: Bulevar e Informalidad</h3>
+                            <p class="text-xs text-slate-600 mt-2">Registro de tránsito peatonal y comercio informal de baja escala en kioscos[cite: 2].</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="gallery-item bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col" data-category="infraestructura">
+                    <div class="h-64 bg-gradient-to-tr from-skyBlue/40 to-thistle/40 flex items-center justify-center relative overflow-hidden">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-700">12:15 PM – Punto 4</span>
+                        <svg class="w-16 h-16 text-slate-400 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2  0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-xs font-semibold text-skyBlue uppercase tracking-wider">Infraestructura</span>
+                            <h3 class="text-base font-bold text-slate-900 mt-1">Etapa D: Hitos y Supermercados</h3>
+                            <p class="text-xs text-slate-600 mt-2">Inspección final en Parroquia La Transfiguración, Plan Suárez y Supermercado Gama[cite: 2].</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Report & Tabs Section -->
+    <section id="informe" class="py-16 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Informe Técnico y Diagnóstico Territorial</h2>
+                <p class="mt-3 text-slate-600">
+                    Hallazgos, dinámicas socioeconómicas y conclusiones del estudio realizado por la Facultad de Ciencias Económicas y Sociales (UCV)[cite: 2].
+                </p>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="flex flex-wrap justify-center gap-2 mb-8 border-b border-slate-200 pb-4">
+                <button onclick="switchTab('metodologia')" class="tab-btn px-5 py-3 rounded-xl font-semibold text-sm transition bg-slate-900 text-white shadow-sm">Metodología</button>
+                <button onclick="switchTab('caracterizacion')" class="tab-btn px-5 py-3 rounded-xl font-semibold text-sm transition bg-slate-100 text-slate-600 hover:bg-slate-200">Ejes Comerciales</button>
+                <button onclick="switchTab('hallazgos')" class="tab-btn px-5 py-3 rounded-xl font-semibold text-sm transition bg-slate-100 text-slate-600 hover:bg-slate-200">Matriz Teórica</button>
+                <button onclick="switchTab('niif')" class="tab-btn px-5 py-3 rounded-xl font-semibold text-sm transition bg-slate-100 text-slate-600 hover:bg-slate-200">Normativa NIIF</button>
+            </div>
+
+            <!-- Tab Content 1: Metodologia -->
+            <div id="tab-metodologia" class="tab-content bg-slate-50 p-8 rounded-3xl border border-slate-200">
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <h3 class="text-2xl font-bold text-slate-900">Metodología y Objetivos del Estudio</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        La investigación adoptó un enfoque cualitativo descriptivo basado en la observación directa no participante para evaluar la convergencia entre la geografía económica y las Normas Internacionales de Información Financiera (NIIF)[cite: 2].
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+                        <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-skyBlue uppercase tracking-wider">Fase 1[cite: 2]</span>
+                            <h4 class="text-base font-bold text-slate-900 mt-1">Planificación y Diseño</h4>
+                            <p class="text-xs text-slate-600 mt-2">Sábado a las 10:00 a.m. Asignación de guías (Abrehilym y Bárbara Ramírez) y registro audiovisual (Mariángel Leal, Haikervey Velásquez, Yorgelis Gutiérrez, Diana Núñez)[cite: 2].</p>
+                        </div>
+                        <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">Fase 2[cite: 2]</span>
+                            <h4 class="text-base font-bold text-slate-900 mt-1">Traslado y Logística</h4>
+                            <p class="text-xs text-slate-600 mt-2">Punto de reunión en Chacaíto (frente al Centro Parks) y abordaje de transporte público hacia la Clínica Santa Paula[cite: 2].</p>
+                        </div>
+                        <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-thistle uppercase tracking-wider">Fase 3[cite: 2]</span>
+                            <h4 class="text-base font-bold text-slate-900 mt-1">Recorrido Territorial</h4>
+                            <p class="text-xs text-slate-600 mt-2">Inspección estructurada en cuatro etapas (Santa Paula, Plaza Las Américas, Bulevar y Grandes Cadenas)[cite: 2].</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content 2: Caracterizacion -->
+            <div id="tab-caracterizacion" class="tab-content hidden bg-slate-50 p-8 rounded-3xl border border-slate-200">
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <h3 class="text-2xl font-bold text-slate-900">Caracterización de Ejes Comerciales Clave</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        Se sistematizó el comportamiento de cinco ejes comerciales y dinámicas socioeconómicas fundamentales bajo teorías espaciales clásicas[cite: 2]:
+                    </p>
+                    <ul class="space-y-3 text-slate-700">
+                        <li class="flex items-start bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-skyBlue mt-2 mr-3 flex-shrink-0"></span>
+                            <div><strong>Consumo Masivo:</strong> Supermercados (Gama, Plan Suárez) bajo la Teoría de Weber (minimización de costos de transporte y centralización de la demanda)[cite: 2].</div>
+                        </li>
+                        <li class="flex items-start bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-pink-400 mt-2 mr-3 flex-shrink-0"></span>
+                            <div><strong>Salud de Alta Jerarquía:</strong> Clínicas y centros de diagnóstico avanzado bajo la Teoría de los Lugares Centrales de Christaller[cite: 2].</div>
+                        </li>
+                        <li class="flex items-start bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-thistle mt-2 mr-3 flex-shrink-0"></span>
+                            <div><strong>Comercio de Conveniencia y Micro-servicios:</strong> Cerrajerías, papelerías y veterinarias bajo la Teoría de Von Thünen (competencia por renta del suelo)[cite: 2].</div>
+                        </li>
+                        <li class="flex items-start bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-blue-400 mt-2 mr-3 flex-shrink-0"></span>
+                            <div><strong>Energía y Movilidad:</strong> Estaciones de servicio y minimarkets bajo la Teoría de Ricardo (ventaja comparativa de ubicación absoluta)[cite: 2].</div>
+                        </li>
+                        <li class="flex items-start bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-slate-700 mt-2 mr-3 flex-shrink-0"></span>
+                            <div><strong>Ocio, Deporte y Salud Física:</strong> Gimnasios y canchas que fomentan la cultura de salud preventiva y cohesión vecinal[cite: 2].</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Tab Content 3: Hallazgos -->
+            <div id="tab-hallazgos" class="tab-content hidden bg-slate-50 p-8 rounded-3xl border border-slate-200">
+                <div class="max-w-4xl mx-auto space-y-6">
+                    <h3 class="text-2xl font-bold text-slate-900">Evidencias y Matriz de Análisis Espacial</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        Síntesis de actividades económicas, teorías espaciales y su vinculación fiscal con la Alcaldía del Municipio Baruta[cite: 2].
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 text-xs uppercase tracking-wider">
+                                    <th class="p-4 font-bold">Sector Económico</th>
+                                    <th class="p-4 font-bold">Descripción en Campo[cite: 2]</th>
+                                    <th class="p-4 font-bold">Teoría Espacial[cite: 2]</th>
+                                    <th class="p-4 font-bold">Aporte / Rol Municipal (Alcaldía)[cite: 2]</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 text-xs text-slate-600">
+                                <tr>
+                                    <td class="p-4 font-semibold text-slate-900">Consumo Masivo</td>
+                                    <td class="p-4">Centralización de productos de primera necesidad, reduciendo el tiempo de desplazamiento.</td>
+                                    <td class="p-4">Teoría de Weber (Minimización de costos)</td>
+                                    <td class="p-4">Pilar fiscal ISAE, supervisión de aseo urbano y gestión de tráfico pesado.</td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="p-4 font-semibold text-slate-900">Servicios de Salud</td>
+                                    <td class="p-4">Clínicas y centros médicos con emergencias 24/7 e imagenología especializada.</td>
+                                    <td class="p-4">Teoría de Christaller (Lugares Centrales)</td>
+                                    <td class="p-4">Tasas de licencias, regulación sanitaria y tranquilidad preventiva local.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-semibold text-slate-900">Comercio de Conveniencia</td>
+                                    <td class="p-4">Cerrajerías, papelerías y servicios técnicos de resolución rápida doméstica.</td>
+                                    <td class="p-4">Teoría de Von Thünen (Renta del suelo)</td>
+                                    <td class="p-4">Patentes comerciales, ordenanzas de zonificación y control de ruidos.</td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="p-4 font-semibold text-slate-900">Energía y Movilidad</td>
+                                    <td class="p-4">Estaciones de servicio y minimarkets que interceptan el flujo vehicular cotidiano.</td>
+                                    <td class="p-4">Teoría de Ricardo (Ventaja absoluta)</td>
+                                    <td class="p-4">Mitigación de colas, control de seguridad vial y protocolos de combustible.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-4 font-semibold text-slate-900">Economía Informal</td>
+                                    <td class="p-4">Kioscos y buhonería de subsistencia con baja afluencia y estructura de subsistencia.</td>
+                                    <td class="p-4">Umbral de demanda no alcanzado</td>
+                                    <td class="p-4">Gestión de pasivos urbanos, estética pública e integración comercial futura.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Content 4: NIIF -->
+            <div id="tab-niif" class="tab-content hidden bg-slate-50 p-8 rounded-3xl border border-slate-200">
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <h3 class="text-2xl font-bold text-slate-900">Relación con las Normas Internacionales (NIIF/NIC)</h3>
+                    <p class="text-slate-600 leading-relaxed">
+                        El informe técnico analiza cómo el tejido comercial de El Cafetal se conecta con los estándares contables vigentes en Venezuela[cite: 2]:
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-skyBlue uppercase tracking-wider">Sector Formal (NIIF Completas / PYMES)[cite: 2]</span>
+                            <h4 class="text-base font-bold text-slate-900 mt-1">Aplicación Técnico-Contable</h4>
+                            <p class="text-xs text-slate-600 mt-2">
+                                <strong>NIIF 15:</strong> Reconocimiento de ingresos ordinarios por contratos con clientes[cite: 2].<br>
+                                <strong>NIC 2:</strong> Control de inventarios bajo método PEPS[cite: 2].<br>
+                                <strong>NIIF 16:</strong> Gestión de arrendamientos y pasivos por derechos de uso[cite: 2].<br>
+                                <strong>NIC 21:</strong> Reexpresión de operaciones cambiarias en entorno multimoneda[cite: 2].
+                            </p>
+                        </div>
+                        <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">Sector Informal & Instituciones[cite: 2]</span>
+                            <h4 class="text-base font-bold text-slate-900 mt-1">Retos Contables</h4>
+                            <p class="text-xs text-slate-600 mt-2">
+                                El comercio informal queda excluido del sistema de partida doble por carecer de registros sistemáticos[cite: 2]. Las instituciones comunitarias operan por presupuestos y rendición de cuentas, y los espacios públicos se rigen por la contabilidad gubernamental del Municipio Baruta[cite: 2].
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Button Callout -->
+            <div class="mt-12 text-center">
+                <a href="#download" onclick="alert('Descargando Informe Técnico Completo en PDF...'); return false;" class="inline-flex items-center space-x-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-skyBlue to-thistle text-slate-900 font-bold shadow-lg hover:opacity-95 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <span>Descargar Informe Completo en PDF (Trabajo de Campo UCV)</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+                <span class="text-white font-bold text-lg">Universidad Central de Venezuela (UCV)</span>
+                <p class="text-xs text-slate-500 mt-1">Facultad de Ciencias Económicas y Sociales · Cátedra de Geografía Económica de Venezuela[cite: 2]</p>
+            </div>
+            <div class="text-xs text-slate-500 text-center md:text-right">
+                <p>Estudio de Campo: Parroquia El Cafetal, Municipio Baruta (12 de Septiembre, 2026)[cite: 2]</p>
+                <p class="mt-1">Autores: Abrehilym Ramírez, Bárbara Ramírez, Diana Nuñez, Haikervey Velasquez, Mariangel Leal, Yorgelis Gútierrez[cite: 2]. Tutor: Dr. Julio César Valor[cite: 2].</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Leaflet Map Script & Interactivity -->
+    <script>
+        // Initialize Map centered on El Cafetal, Baruta with custom polyline route
+        const map = L.map('leafletMap').setView([10.4600, -66.8380], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const latlngs = [
+            [10.4772, -66.8622], // Chacaíto
+            [10.4670, -66.8450], // Santa Paula
+            [10.4580, -66.8390], // Plaza Las Américas
+            [10.4530, -66.8320]  // El Cafetal Sur / Gama
+        ];
+
+        const polyline = L.polyline(latlngs, {color: '#A2D2FF', weight: 6, opacity: 0.9}).addTo(map);
+        
+        L.marker([10.4772, -66.8622]).addTo(map).bindPopup("<b>Punto de Partida: Chacaíto</b><br>Frente a Centro Parks[cite: 2].");
+        L.marker([10.4670, -66.8450]).addTo(map).bindPopup("<b>Etapa A: Clínica Santa Paula</b><br>Entorno residencial ordenado[cite: 2].");
+        L.marker([10.4580, -66.8390]).addTo(map).bindPopup("<b>Etapa B: Plaza Las Américas</b><br>Nodo comercial, SAIME y servicios[cite: 2].");
+        L.marker([10.4530, -66.8320]).addTo(map).bindPopup("<b>Etapa C & D: Supermercados Gama y Plan Suárez</b>[cite: 2]");
+
+        map.fitBounds(polyline.getBounds(), {padding: [50, 50]});
+
+        function zoomToPoint(lat, lng) {
+            map.setView([lat, lng], 16);
+        }
+
+        // Gallery Filter Logic
+        function filterGallery(category) {
+            const items = document.querySelectorAll('.gallery-item');
+            const buttons = document.querySelectorAll('.filter-btn');
+
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-slate-900', 'text-white');
+                btn.classList.add('bg-white', 'border', 'border-slate-200', 'text-slate-700');
+            });
+            event.target.classList.remove('bg-white', 'border', 'border-slate-200', 'text-slate-700');
+            event.target.classList.add('bg-slate-900', 'text-white');
+
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-btn');
+
+            contents.forEach(c => c.classList.add('hidden'));
+            buttons.forEach(b => {
+                b.classList.remove('bg-slate-900', 'text-white', 'shadow-sm');
+                b.classList.add('bg-slate-100', 'text-slate-600');
+            });
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            event.target.classList.remove('bg-slate-100', 'text-slate-600');
+            event.target.classList.add('bg-slate-900', 'text-white', 'shadow-sm');
+        }
+    </script>
+</body>
+</html>
